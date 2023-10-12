@@ -9,7 +9,7 @@ import {
 
 @Injectable()
 export class AuthService implements OnModuleInit {
-  private authService: AuthServiceClient;
+  private authServiceClient: AuthServiceClient;
 
   constructor(
     @Inject(AUTH_SERVICE_NAME)
@@ -17,11 +17,11 @@ export class AuthService implements OnModuleInit {
   ) {}
 
   public onModuleInit(): void {
-    this.authService =
+    this.authServiceClient =
       this.client.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
   }
 
   public async validate(token: string): Promise<ValidateResponse> {
-    return firstValueFrom(this.authService.validate({ token }));
+    return firstValueFrom(this.authServiceClient.validate({ token }));
   }
 }

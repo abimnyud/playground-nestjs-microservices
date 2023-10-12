@@ -37,16 +37,3 @@ export interface ProductServiceClient {
 
   findOne(request: FindOneRequest): Observable<FindOneResponse>;
 }
-
-export interface ProductServiceController {
-  createProduct(
-    request: CreateProductRequest,
-  ):
-    | Promise<CreateProductResponse>
-    | Observable<CreateProductResponse>
-    | CreateProductResponse;
-
-  findOne(
-    request: FindOneRequest,
-  ): Promise<FindOneResponse> | Observable<FindOneResponse> | FindOneResponse;
-}

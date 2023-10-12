@@ -4,24 +4,21 @@ import { Observable } from 'rxjs';
 
 export const protobufPackage = 'auth';
 
+export interface ResponsePayload {
+  status: number;
+  error: string[];
+}
+
 export interface SignUpRequest {
   email: string;
   password: string;
 }
 
-export interface SignUpResponse {
-  status: number;
-  error: string[];
-}
+export interface SignUpResponse extends ResponsePayload {}
 
-export interface SignInRequest {
-  email: string;
-  password: string;
-}
+export interface SignInRequest extends SignUpRequest {}
 
-export interface SignInResponse {
-  status: number;
-  error: string[];
+export interface SignInResponse extends SignUpResponse {
   token: string;
 }
 
@@ -29,9 +26,7 @@ export interface ValidateRequest {
   token: string;
 }
 
-export interface ValidateResponse {
-  status: number;
-  error: string[];
+export interface ValidateResponse extends ResponsePayload {
   userId: number;
 }
 
@@ -44,21 +39,4 @@ export interface AuthServiceClient {
   signIn(request: SignInRequest): Observable<SignInResponse>;
 
   validate(request: ValidateRequest): Observable<ValidateResponse>;
-}
-
-export interface AuthServiceController {
-  signUp(
-    request: SignUpRequest,
-  ): Promise<SignUpResponse> | Observable<SignUpResponse> | SignUpResponse;
-
-  signIn(
-    request: SignInRequest,
-  ): Promise<SignInResponse> | Observable<SignInResponse> | SignInResponse;
-
-  validate(
-    request: ValidateRequest,
-  ):
-    | Promise<ValidateResponse>
-    | Observable<ValidateResponse>
-    | ValidateResponse;
 }

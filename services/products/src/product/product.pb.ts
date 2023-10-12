@@ -1,28 +1,20 @@
-/* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
 export const protobufPackage = 'product';
 
-export interface CreateProductRequest {
+export interface Product {
+  id: number;
   name: string;
-  sku: string;
   stock: number;
   price: number;
 }
+
+export interface CreateProductRequest extends Omit<Product, 'id'> {}
 
 export interface CreateProductResponse {
   status: number;
   error: string[];
   id: number;
-}
-
-export interface FindOneData {
-  id: number;
-  name: string;
-  sku: string;
-  stock: number;
-  price: number;
 }
 
 export interface FindOneRequest {
@@ -32,17 +24,7 @@ export interface FindOneRequest {
 export interface FindOneResponse {
   status: number;
   error: string[];
-  data: FindOneData | undefined;
-}
-
-export interface DecreaseStockRequest {
-  id: number;
-  orderId: number;
-}
-
-export interface DecreaseStockResponse {
-  status: number;
-  error: string[];
+  data: Product;
 }
 
 export const PRODUCT_PACKAGE_NAME = 'product';
@@ -54,17 +36,4 @@ export interface ProductServiceClient {
   ): Observable<CreateProductResponse>;
 
   findOne(request: FindOneRequest): Observable<FindOneResponse>;
-}
-
-export interface ProductServiceController {
-  createProduct(
-    request: CreateProductRequest,
-  ):
-    | Promise<CreateProductResponse>
-    | Observable<CreateProductResponse>
-    | CreateProductResponse;
-
-  findOne(
-    request: FindOneRequest,
-  ): Promise<FindOneResponse> | Observable<FindOneResponse> | FindOneResponse;
 }

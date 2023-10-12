@@ -24,7 +24,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('products/products')
 @Controller('products')
 export class ProductController implements OnModuleInit {
-  private productService: ProductServiceClient;
+  private productServiceClient: ProductServiceClient;
 
   constructor(
     @Inject(PRODUCT_SERVICE_NAME)
@@ -32,7 +32,7 @@ export class ProductController implements OnModuleInit {
   ) {}
 
   public onModuleInit(): void {
-    this.productService =
+    this.productServiceClient =
       this.client.getService<ProductServiceClient>(PRODUCT_SERVICE_NAME);
   }
 
@@ -41,7 +41,7 @@ export class ProductController implements OnModuleInit {
   async createProduct(
     @Body() body: CreateProductRequest,
   ): Promise<Observable<CreateProductResponse>> {
-    return this.productService.createProduct(body);
+    return this.productServiceClient.createProduct(body);
   }
 
   @Get(':id')
@@ -49,6 +49,6 @@ export class ProductController implements OnModuleInit {
   async findOne(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<Observable<FindOneResponse>> {
-    return this.productService.findOne({ id });
+    return this.productServiceClient.findOne({ id });
   }
 }

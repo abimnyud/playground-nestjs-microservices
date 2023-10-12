@@ -13,7 +13,7 @@ import { SignInRequestDto, SignUpRequestDto } from './dto/auth.dto';
 @ApiTags('auth/auth')
 @Controller('auth')
 export class AuthController implements OnModuleInit {
-  private authService: AuthServiceClient;
+  private authServiceClient: AuthServiceClient;
 
   constructor(
     @Inject(AUTH_SERVICE_NAME)
@@ -21,7 +21,7 @@ export class AuthController implements OnModuleInit {
   ) {}
 
   public onModuleInit(): void {
-    this.authService =
+    this.authServiceClient =
       this.client.getService<AuthServiceClient>(AUTH_SERVICE_NAME);
   }
 
@@ -29,13 +29,13 @@ export class AuthController implements OnModuleInit {
   async signUp(
     @Body() body: SignUpRequestDto,
   ): Promise<Observable<SignUpResponse>> {
-    return this.authService.signUp(body);
+    return this.authServiceClient.signUp(body);
   }
 
   @Post('sign-in')
   async signIn(
     @Body() body: SignInRequestDto,
   ): Promise<Observable<SignInResponse>> {
-    return this.authService.signIn(body);
+    return this.authServiceClient.signIn(body);
   }
 }
