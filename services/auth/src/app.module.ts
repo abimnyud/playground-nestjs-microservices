@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AuthModule } from './auth/auth.module';
       logging: true,
     }),
     AuthModule,
+    SharedModule,
   ],
   controllers: [],
   providers: [],

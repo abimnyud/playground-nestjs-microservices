@@ -12,7 +12,7 @@ export class ProductService {
     private readonly productRepository: Repository<Product>,
   ) {}
 
-  public async findOne({ id }: FindOneRequestDto): Promise<FindOneResponse> {
+  async findOne({ id }: FindOneRequestDto): Promise<FindOneResponse> {
     const product: Product = await this.productRepository.findOneBy({ id });
 
     if (!product) {
@@ -26,13 +26,12 @@ export class ProductService {
     return { data: product, error: null, status: HttpStatus.OK };
   }
 
-  public async createProduct(
+  async createProduct(
     payload: CreateProductRequestDto,
   ): Promise<CreateProductResponse> {
     const product: Product = new Product();
 
     product.name = payload.name;
-    product.sku = payload.sku;
     product.stock = payload.stock;
     product.price = payload.price;
 
@@ -40,4 +39,19 @@ export class ProductService {
 
     return { id: product.id, error: null, status: HttpStatus.OK };
   }
+
+  // async decreaseStock({
+  //   id,
+  //   value,
+  // }: DecreaseStockRequest): Promise<DecreaseStockResponse> {
+  //   const product = await this.productRepository.findOneBy({ id });
+
+  //   if (!product) {
+  //     return { status: HttpStatus.NOT_FOUND, error: ['Product not found'] };
+  //   }
+
+  //   await this.productRepository.update(id, { stock: product.stock - value });
+
+  //   return { status: HttpStatus.OK, error: null };
+  // }
 }

@@ -1,5 +1,5 @@
 import { Controller, Inject } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { EventPattern, GrpcMethod, Payload } from '@nestjs/microservices';
 import {
   SignInRequestDto,
   SignUpRequestDto,
@@ -33,5 +33,10 @@ export class AuthController {
   @GrpcMethod(AUTH_SERVICE_NAME, 'Validate')
   async validate(payload: ValidateRequestDto): Promise<ValidateResponse> {
     return this.service.validate(payload);
+  }
+
+  @EventPattern('HELLO_WORLD')
+  async eventHelloWorld(@Payload() data: any) {
+    console.log(data);
   }
 }

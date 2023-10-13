@@ -1,4 +1,4 @@
-import { Controller, Inject } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { CreateProductRequestDto, FindOneRequestDto } from './dto/product.dto';
 import {
@@ -7,23 +7,37 @@ import {
   PRODUCT_SERVICE_NAME,
 } from './product.pb';
 import { ProductService } from './product.service';
+import { CloudPubSubClientService } from 'src/shared/pub-sub.service';
 
 @Controller()
 export class ProductController {
   constructor(
-    @Inject(ProductService)
-    private readonly service: ProductService,
+    private readonly productService: ProductService,
+    private readonly cloudPubSubClientService: CloudPubSubClientService,
   ) {}
 
   @GrpcMethod(PRODUCT_SERVICE_NAME, 'CreateProduct')
   createProduct(
     payload: CreateProductRequestDto,
   ): Promise<CreateProductResponse> {
-    return this.service.createProduct(payload);
+    return this.productService.createProduct(payload);
   }
 
   @GrpcMethod(PRODUCT_SERVICE_NAME, 'FindOne')
   findOne(payload: FindOneRequestDto): Promise<FindOneResponse> {
-    return this.service.findOne(payload);
+    return this.productService.findOne(payload);
+  }
+
+  // @GrpcMethod(PRODUCT_SERVICE_NAME, 'DecreaseStock')
+  // decreaseStock(payload: DecreaseStockRequest): Promise<DecreaseStockResponse> {
+  //   return this.productService.decreaseStock(payload);
+  // }
+  @Get()
+  helloWorld() {
+    this.cloudPubSubClientService.client.emit('HELLO_WORLD', {
+      message: 'Hello World!',
+    });
+
+    return 'Hello World';
   }
 }

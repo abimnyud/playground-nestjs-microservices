@@ -16,10 +16,10 @@ import {
   ProductServiceClient,
   PRODUCT_SERVICE_NAME,
   CreateProductResponse,
-  CreateProductRequest,
 } from './product.pb';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { CreateProductRequestDto } from './dto/product.dto';
 
 @ApiTags('products/products')
 @Controller('products')
@@ -39,7 +39,7 @@ export class ProductController implements OnModuleInit {
   @Post()
   @UseGuards(AuthGuard)
   async createProduct(
-    @Body() body: CreateProductRequest,
+    @Body() body: CreateProductRequestDto,
   ): Promise<Observable<CreateProductResponse>> {
     return this.productServiceClient.createProduct(body);
   }
@@ -51,4 +51,13 @@ export class ProductController implements OnModuleInit {
   ): Promise<Observable<FindOneResponse>> {
     return this.productServiceClient.findOne({ id });
   }
+
+  // @Patch(':id')
+  // @UseGuards(AuthGuard)
+  // async decreaseStock(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Query('value', ParseIntPipe) value: number,
+  // ): Promise<Observable<DecreaseStockResponse>> {
+  //   return this.productServiceClient.decreaseStock({ id, value });
+  // }
 }

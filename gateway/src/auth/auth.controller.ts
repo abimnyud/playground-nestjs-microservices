@@ -36,6 +36,8 @@ export class AuthController implements OnModuleInit {
   async signIn(
     @Body() body: SignInRequestDto,
   ): Promise<Observable<SignInResponse>> {
+    console.log('Sign In lewat API Gateway');
+
     return this.authServiceClient.signIn(body);
   }
 }
