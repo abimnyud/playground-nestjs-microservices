@@ -4,7 +4,6 @@ import { Transport } from '@nestjs/microservices';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { protobufPackage } from './product/product.pb';
-import { GCPubSubServer } from 'nestjs-google-pubsub-microservice';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,18 +15,6 @@ async function bootstrap() {
       package: protobufPackage,
       protoPath: join(__dirname + '../../../../_proto/product.proto'),
     },
-  });
-
-  app.connectMicroservice({
-    strategy: new GCPubSubServer({
-      topic: `${process.env.NODE_ENV}_topic`,
-      subscription: `product_${process.env.NODE_ENV}_subscription`,
-      noAck: true,
-      client: {
-        projectId: 'abimanyu_development',
-        // keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-      },
-    }),
   });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));

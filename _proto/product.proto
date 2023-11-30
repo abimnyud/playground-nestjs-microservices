@@ -3,12 +3,25 @@ syntax = "proto3";
 package product;
 
 service ProductService {
-  rpc CreateProduct (CreateProductRequest) returns (CreateProductResponse) {}
+  rpc Create (CreateProductRequest) returns (CreateProductResponse) {}
+  rpc FindMany (FindManyRequest) returns (FindManyResponse) {}
   rpc FindOne (FindOneRequest) returns (FindOneResponse) {}
-  // rpc DecreaseStock (DecreaseStockRequest) returns (DecreaseStockResponse) {}
+  rpc Update (UpdateRequest) returns (UpdateResponse) {}
+  rpc Delete (DeleteRequest) returns (DeleteResponse) {}
 }
 
-// CreateProduct
+message Product {
+  int32 id = 1;
+  string name = 2;
+  int32 stock = 3;
+  int32 price = 4;
+}
+
+message Error {
+  int32 status = 1;
+  string name = 2;
+  string message = 3;
+}
 
 message CreateProductRequest {
   string name = 1;
@@ -17,18 +30,12 @@ message CreateProductRequest {
 }
 
 message CreateProductResponse {
-  int32 status = 1;
-  repeated string error = 2;
-  int32 id = 3;
-}
+  message Data {
+    int32 id = 1;
+  }
 
-// FindOne
-
-message FindOneData {
-  int32 id = 1;
-  string name = 2;
-  int32 stock = 3;
-  double price = 4;
+  optional Data data = 1;
+  optional Error error = 2;
 }
 
 message FindOneRequest {
@@ -36,17 +43,45 @@ message FindOneRequest {
 }
 
 message FindOneResponse {
-  int32 status = 1;
-  repeated string error = 2;
-  FindOneData data = 3;
+  optional Product data = 1;
+  optional Error error = 2;
 }
 
-// message DecreaseStockRequest {
-//   int32 id = 1;
-//   int32 value = 2;
-// }
+message FindManyRequest {
+  string keyword = 1;
+  int32 page = 2;
+  int32 limit = 3;
+}
 
-// message DecreaseStockResponse {
-//   int32 status = 1;
-//   repeated string error = 2;
-// }
+message FindManyResponse {
+  message Meta {
+    int32 total = 1;
+    optional int32 page = 2;
+    optional int32 limit = 3;
+  }
+
+  repeated Product data = 1;
+  Meta meta = 2;
+}
+
+message UpdateRequest {
+  Product data = 1;
+}
+
+message UpdateResponse {
+  optional Product data = 1;
+  optional Error error = 2;
+}
+
+message DeleteRequest {
+  int32 id = 1;
+}
+
+message DeleteResponse {
+  message Data {
+    int32 id = 1;
+  }
+
+  Data data = 1;
+  optional Error error = 2;
+}

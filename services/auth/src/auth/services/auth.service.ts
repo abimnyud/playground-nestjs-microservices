@@ -22,7 +22,14 @@ export class AuthService {
     let auth: Auth = await this.repository.findOne({ where: { email } });
 
     if (auth) {
-      return { status: HttpStatus.CONFLICT, error: ['E-mail already exists'] };
+      return {
+        error: {
+          status: HttpStatus.CONFLICT,
+          name: 'CONFLICT',
+          message: 'E-mail already exists',
+        },
+        data: null,
+      };
     }
 
     auth = new Auth();
@@ -32,7 +39,7 @@ export class AuthService {
 
     await this.repository.save(auth);
 
-    return { status: HttpStatus.CREATED, error: null };
+    return { data: { success: true }, error: null };
   }
 
   async signIn({ email, password }: SignInRequestDto): Promise<SignInResponse> {
@@ -40,9 +47,12 @@ export class AuthService {
 
     if (!auth) {
       return {
-        status: HttpStatus.NOT_FOUND,
-        error: ['E-mail not found'],
-        token: null,
+        error: {
+          status: HttpStatus.NOT_FOUND,
+          name: 'NOT FOUND',
+          message: 'E-mail not found',
+        },
+        data: null,
       };
     }
 
@@ -53,15 +63,18 @@ export class AuthService {
 
     if (!isPasswordValid) {
       return {
-        status: HttpStatus.NOT_FOUND,
-        error: ['Wrong password'],
-        token: null,
+        error: {
+          status: HttpStatus.NOT_FOUND,
+          name: 'NOT FOUND',
+          message: 'Wrong password',
+        },
+        data: null,
       };
     }
 
     const token: string = this.jwtService.generateToken(auth);
 
-    return { token, status: HttpStatus.OK, error: null };
+    return { data: { token }, error: null };
   }
 
   async validate({ token }: ValidateRequestDto): Promise<ValidateResponse> {
@@ -69,9 +82,12 @@ export class AuthService {
 
     if (!decoded) {
       return {
-        status: HttpStatus.FORBIDDEN,
-        error: ['Invalid token'],
-        userId: null,
+        error: {
+          status: HttpStatus.FORBIDDEN,
+          name: 'FORBIDDEN',
+          message: 'Invalid token',
+        },
+        data: null,
       };
     }
 
@@ -79,12 +95,15 @@ export class AuthService {
 
     if (!auth) {
       return {
-        status: HttpStatus.CONFLICT,
-        error: ['User not found'],
-        userId: null,
+        error: {
+          status: HttpStatus.CONFLICT,
+          name: 'NOT FOUND',
+          message: 'User not found',
+        },
+        data: null,
       };
     }
 
-    return { status: HttpStatus.OK, error: null, userId: decoded.id };
+    return { data: { userId: decoded.id }, error: null };
   }
 }
