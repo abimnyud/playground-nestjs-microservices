@@ -1,0 +1,57 @@
+services:
+  gateway:
+    build:
+      dockerfile: ./gateway/Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on:
+      - auth-service
+      - product-service
+
+  auth-service:
+    build:
+      dockerfile: ./services/auth/Dockerfile
+    expose:
+      - 50051
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=dev
+      - DB_PASSWORD=password
+      - DB_DATABASE=nestjs_microservice_auth
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  product-service:
+    build:
+      dockerfile: ./services/product/Dockerfile
+    expose:
+      - 50053
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_USERNAME=dev
+      - DB_PASSWORD=password
+      - DB_DATABASE=nestjs_microservice_products
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=dev
+      - MYSQL_PASSWORD=password
+      - MYSQL_DATABASE=nestjs_microservice_auth
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 20s
+      interval: 10s
+      retries: 3
+
+volumes:
+  mysql-data:
